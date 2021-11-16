@@ -2,11 +2,12 @@
 // JavaObjClientView.java ObjecStram 기반 Client
 //실질적인 채팅 창
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.BasicStroke;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -78,6 +79,7 @@ public class JavaGameClientView extends JFrame {
 	private Image panelImage = null; 
 	private Graphics gc2 = null;
 	private Color c = null;
+	private int mode = 0; //0:line, 1:rectangle, 2:circle
 
 	Vector<Point> startV = new Vector<>();
 
@@ -160,7 +162,8 @@ public class JavaGameClientView extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "400", "Bye");
 				SendObject(msg);
-				System.exit(0);			}
+				System.exit(0);
+			}
 			@Override
 			public void mousePressed(MouseEvent e) {
 			}
@@ -198,7 +201,7 @@ public class JavaGameClientView extends JFrame {
 		lblMouseEvent.setFont(new Font("굴림", Font.BOLD, 14));
 		lblMouseEvent.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblMouseEvent.setBackground(Color.WHITE);
-		lblMouseEvent.setBounds(331, 550, 400, 40);
+		lblMouseEvent.setBounds(12, 550, 345, 40);
 		contentPane.add(lblMouseEvent);
 
 		JLabel redBtn = new JLabel("", new ImageIcon("src/imgsrc/redBtn.png"), JLabel.CENTER);
@@ -318,12 +321,6 @@ public class JavaGameClientView extends JFrame {
 //		eraseBtn.setFocusPainted(false);
 //		eraseBtn.setOpaque(true);
 		contentPane.add(eraseBtn);
-		
-		JLabel lblNewLabel = new JLabel("\uCC38\uAC00\uC790\uB4E4");
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblNewLabel.setBounds(91, 165, 83, 31);
-		contentPane.add(lblNewLabel);
 		eraseBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.WHITE;
@@ -340,7 +337,46 @@ public class JavaGameClientView extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 			}
+		});		
+		
+		JLabel lblNewLabel = new JLabel("\uCC38\uAC00\uC790\uB4E4");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblNewLabel.setBounds(91, 165, 83, 31);
+		contentPane.add(lblNewLabel);
+
+		JButton rectangeBtn = new JButton(new ImageIcon("src/imgsrc/rectangle_btn.png"));
+//		rectangeBtn.setContentAreaFilled(false);
+//		rectangeBtn.setFocusPainted(false);
+//		rectangeBtn.setOpaque(true);
+		rectangeBtn.setBounds(515, 550, 45, 45);
+		rectangeBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mode = 1;
+			}
 		});
+		contentPane.add(rectangeBtn);
+		
+		JButton circleBtn = new JButton(new ImageIcon("src/imgsrc/circle_btn.png"));
+		circleBtn.setOpaque(true);
+		circleBtn.setBounds(595, 550, 45, 45);
+		circleBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mode = 2;
+			}
+		});
+		contentPane.add(circleBtn);
+
+		
+		JButton penBtn = new JButton(new ImageIcon("src/imgsrc/penBtn.png"));
+		penBtn.setBounds(435, 550, 45, 45);
+		penBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mode = 0;
+			}
+		});
+		contentPane.add(penBtn);
+
 
 		try {
 			socket = new Socket(ip_addr, Integer.parseInt(port_no));
@@ -483,24 +519,39 @@ public class JavaGameClientView extends JFrame {
 		
 	}
 	
-//	Vector<Point> endV = new Vector<>();
 	
 	// Mouse Event Handler
 	class MyMouseEvent implements MouseListener, MouseMotionListener {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mouseDragged " + e.getX() + "," + e.getY());// 좌표출력가능
-//			Color c = new Color(0,0,255);
 			gc2.setColor(c);
-//			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
 			
-			startV.add(e.getPoint());
-			
-			for(int i=0;i<startV.size()-1;i++) {
-				Point start = startV.elementAt(i);
-				Point end = startV.elementAt(i+1);
-				
-				gc2.drawLine((int)start.getX(), (int)start.getY(), (int)end.getX(), (int)end.getY());
+			if(mode == 0) {	//mode:line
+				Graphics2D g = (Graphics2D)gc2;
+				g.setStroke(new BasicStroke(pen_size));
+				startV.add(e.getPoint());
+				for(int i=0;i<startV.size()-1;i++) {
+					Point start = startV.elementAt(i);
+					Point end = startV.elementAt(i+1);
+					gc2.drawLine((int)start.getX(), (int)start.getY(), (int)end.getX(), (int)end.getY());
+				}				
+			}else if(mode == 1) {	//mode:rectangle
+				startV.add(e.getPoint());
+
+				Point start = startV.elementAt(0);
+				for(int i=1;i<startV.size()-1;i++) {
+					Point end = startV.elementAt(i+1);
+					gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				}				
+			}else if(mode == 2) {//mode:circle
+				startV.add(e.getPoint());
+
+//				Point start = startV.elementAt(0);
+//				for(int i=1;i<startV.size()-1;i++) {
+//					Point end = startV.elementAt(i+1);
+//					gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+//				}
 			}
 
 			// panelImnage는 paint()에서 이용한다.
@@ -516,12 +567,10 @@ public class JavaGameClientView extends JFrame {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mouseClicked " + e.getX() + "," + e.getY());
-//			Color c = new Color(0,0,255);
 			gc2.setColor(c);
-//			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
 			
 			startV.add(e.getPoint());
-
+			
 			gc.drawImage(panelImage, 0, 0, panel);
 			SendMouseEvent(e);
 		}
@@ -543,7 +592,8 @@ public class JavaGameClientView extends JFrame {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mousePressed " + e.getX() + "," + e.getY());
-			startV.clear();
+			
+			startV.clear();				
 
 //			startV.add(e.getPoint());
 		}
@@ -551,11 +601,15 @@ public class JavaGameClientView extends JFrame {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mouseReleased " + e.getX() + "," + e.getY());
-			// 드래그중 멈출시 보임
-//			endV.add(e.getPoint());
+			// 드래그중 멈출시 보임			
 			
-			
-//			repaint();
+			if(mode == 2) {
+				Point start = startV.elementAt(0);
+				Point end = startV.elementAt(startV.size()-1);
+				gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+			}
+			gc.drawImage(panelImage, 0, 0, panel);
+			SendMouseEvent(e);
 		}
 	}
 

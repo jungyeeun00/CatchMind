@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.metadata/.plugins/org.eclipse.egit.core/.org.eclipse.egit.core.cmp/.org.eclipse.egit.core.cmp.iml" filepath="$PROJECT_DIR$/.metadata/.plugins/org.eclipse.egit.core/.org.eclipse.egit.core.cmp/.org.eclipse.egit.core.cmp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CatchMind-java-game.iml" filepath="$PROJECT_DIR$/.idea/CatchMind-java-game.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CatchMindGameClient/CatchMindGameClient.iml" filepath="$PROJECT_DIR$/CatchMindGameClient/CatchMindGameClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CatchMindGameServer/CatchMindGameServer.iml" filepath="$PROJECT_DIR$/CatchMindGameServer/CatchMindGameServer.iml" />
+    </modules>
+  </component>
+</project>
