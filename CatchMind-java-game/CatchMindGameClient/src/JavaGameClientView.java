@@ -2,6 +2,7 @@
 // JavaObjClientView.java ObjecStram 기반 Client
 //실질적인 채팅 창
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.Font;
 import java.awt.Frame;
@@ -78,6 +79,8 @@ public class JavaGameClientView extends JFrame {
 	private Graphics gc2 = null;
 	private Color c = null;
 
+	Vector<Point> startV = new Vector<>();
+
 
 	
 	/**
@@ -87,12 +90,15 @@ public class JavaGameClientView extends JFrame {
 	public JavaGameClientView(String username, String ip_addr, String port_no)  {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1070, 660);
+		setBounds(100, 100, 1070, 637);
 		contentPane = new JPanel() {
 			Image bg = new ImageIcon("src/imgsrc/main_bg_resize.png").getImage();
 			
-			public void paint(Graphics g) {
-				g.drawImage(bg, 0, 0, frame);
+			@Override
+			public void paintComponent(Graphics g) {
+				g.drawImage(bg, 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
 			}
 		};
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -127,9 +133,9 @@ public class JavaGameClientView extends JFrame {
 		lblUserName = new JLabel("Name");
 		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblUserName.setBackground(Color.WHITE);
-		lblUserName.setFont(new Font("굴림", Font.BOLD, 14));
+		lblUserName.setFont(new Font("양재인장체M", Font.BOLD, 16));
 		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName.setBounds(12, 539, 62, 40);
+		lblUserName.setBounds(31, 202, 102, 50);
 		contentPane.add(lblUserName);
 		setVisible(true);
 
@@ -142,20 +148,38 @@ public class JavaGameClientView extends JFrame {
 		imgBtn.setBounds(803, 493, 35, 35);
 		contentPane.add(imgBtn);
 
-		JButton btnNewButton = new JButton("종 료");
-		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		JLabel btnNewButton = new JLabel("", new ImageIcon("src/imgsrc/quitBtn.png"), JLabel.CENTER);
+//		btnNewButton.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				ChatMsg msg = new ChatMsg(UserName, "400", "Bye");
+//				SendObject(msg);
+//				System.exit(0);
+//			}
+//		});
+		btnNewButton.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "400", "Bye");
 				SendObject(msg);
-				System.exit(0);
+				System.exit(0);			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
 			}
 		});
-		btnNewButton.setBounds(286, 543, 69, 40);
+		btnNewButton.setBounds(12, 21, 69, 40);
 		contentPane.add(btnNewButton);
 
 		panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		panel.setForeground(Color.WHITE);
+		panel.setBorder(new LineBorder(Color.WHITE));
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(273, 100, 521, 431);
 		contentPane.add(panel);
@@ -166,7 +190,7 @@ public class JavaGameClientView extends JFrame {
 		gc2 = panelImage.getGraphics();
 		gc2.setColor(panel.getBackground());
 		gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
-		gc2.setColor(Color.BLACK);
+		gc2.setColor(Color.WHITE);
 		gc2.drawRect(0,0, panel.getWidth()-1,  panel.getHeight()-1);
 		
 		lblMouseEvent = new JLabel("<dynamic>");
@@ -174,99 +198,149 @@ public class JavaGameClientView extends JFrame {
 		lblMouseEvent.setFont(new Font("굴림", Font.BOLD, 14));
 		lblMouseEvent.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblMouseEvent.setBackground(Color.WHITE);
-		lblMouseEvent.setBounds(376, 539, 400, 40);
+		lblMouseEvent.setBounds(331, 550, 400, 40);
 		contentPane.add(lblMouseEvent);
-		
-		JButton btnRed = new JButton(new ImageIcon("src/imgsrc/redBtn.png"));
-		btnRed.setBounds(813, 30, 35, 60);
-		btnRed.setBorderPainted(false);
-		btnRed.setContentAreaFilled(false);
-		btnRed.setFocusPainted(false);
-		btnRed.setOpaque(true);
-		contentPane.add(btnRed);
-		btnRed.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+
+		JLabel redBtn = new JLabel("", new ImageIcon("src/imgsrc/redBtn.png"), JLabel.CENTER);
+		redBtn.setBounds(813, 30, 35, 60);
+		redBtn.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
 				c = Color.RED;
 			}
-			
-		});
-		
-		JButton btnGreen = new JButton(new ImageIcon("src/imgsrc/greenBtn.png"));
-		btnGreen.setBounds(813, 116, 35, 60);
-		btnGreen.setBorderPainted(false);
-		btnGreen.setContentAreaFilled(false);
-		btnGreen.setFocusPainted(false);
-		btnGreen.setOpaque(true);
-		contentPane.add(btnGreen);
-		btnGreen.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		contentPane.add(redBtn);
+
+		
+		JLabel btnGreen = new JLabel("", new ImageIcon("src/imgsrc/greenBtn.png"), JLabel.CENTER);
+		btnGreen.setBounds(813, 116, 35, 60);
+		btnGreen.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
 				c = Color.GREEN;
 			}
-			
-		});
-
-		JButton btnBlue = new JButton(new ImageIcon("src/imgsrc/blueBtn.png"));
-		btnBlue.setBounds(813, 193, 35, 60);
-		btnBlue.setBorderPainted(false);
-		btnBlue.setContentAreaFilled(false);
-		btnBlue.setFocusPainted(false);
-		btnBlue.setOpaque(true);
-		contentPane.add(btnBlue);
-		btnBlue.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});
+		contentPane.add(btnGreen);
+
+		JLabel btnBlue = new JLabel("", new ImageIcon("src/imgsrc/blueBtn.png"), JLabel.CENTER);
+		btnBlue.setBounds(813, 193, 35, 60);
+		contentPane.add(btnBlue);
+		btnBlue.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
 				c = Color.BLUE;
 			}
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
 		});
 
-		JButton btnYellow = new JButton(new ImageIcon("src/imgsrc/yellowBtn.png"));
+		JLabel btnYellow = new JLabel("", new ImageIcon("src/imgsrc/yellowBtn.png"), JLabel.CENTER);
 		btnYellow.setBounds(870, 73, 35, 60);
-		btnYellow.setBorderPainted(false);
-		btnYellow.setContentAreaFilled(false);
-		btnYellow.setFocusPainted(false);
-		btnYellow.setOpaque(true);
 		contentPane.add(btnYellow);
-		btnYellow.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				c = Color.YELLOW;
+		btnYellow.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
+				c = new Color(236, 231, 26);
 			}
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
 		});
 		
-		JButton btnPurple = new JButton(new ImageIcon("src/imgsrc/purpleBtn.png"));
+		JLabel btnPurple = new JLabel("", new ImageIcon("src/imgsrc/purpleBtn.png"), JLabel.CENTER);
 		btnPurple.setBounds(870, 160, 35, 60);
-		btnPurple.setBorderPainted(false);
-		btnPurple.setContentAreaFilled(false);
-		btnPurple.setFocusPainted(false);
-		btnPurple.setOpaque(true);
+//		btnPurple.setBorderPainted(false);
+//		btnPurple.setContentAreaFilled(false);
+//		btnPurple.setFocusPainted(false);
+//		btnPurple.setOpaque(true);
 		contentPane.add(btnPurple);
-		btnPurple.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				c = Color.PINK;
+		btnPurple.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
+				c = new Color(175, 75, 214);
 			}
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
 		});
 		
-		eraseBtn = new JButton(new ImageIcon("src/imgsrc/erase_btn.png"));
-		eraseBtn.setBounds(954, 100, 70, 70);
-		eraseBtn.setBorderPainted(false);
-		eraseBtn.setContentAreaFilled(false);
-		eraseBtn.setFocusPainted(false);
-		eraseBtn.setOpaque(true);
+		JLabel eraseBtn = new JLabel("", new ImageIcon("src/imgsrc/eraserBtn.png"), JLabel.CENTER);
+		eraseBtn.setBounds(954, 100, 68, 70);
+//		eraseBtn.setBorderPainted(false);
+//		eraseBtn.setContentAreaFilled(false);
+//		eraseBtn.setFocusPainted(false);
+//		eraseBtn.setOpaque(true);
 		contentPane.add(eraseBtn);
-		eraseBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
+		
+		JLabel lblNewLabel = new JLabel("\uCC38\uAC00\uC790\uB4E4");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblNewLabel.setBounds(91, 165, 83, 31);
+		contentPane.add(lblNewLabel);
+		eraseBtn.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
 				c = Color.WHITE;
 			}
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
 		});
-
 
 		try {
 			socket = new Socket(ip_addr, Integer.parseInt(port_no));
@@ -409,8 +483,7 @@ public class JavaGameClientView extends JFrame {
 		
 	}
 	
-	Vector<Point> startV = new Vector<>();
-	Vector<Point> endV = new Vector<>();
+//	Vector<Point> endV = new Vector<>();
 	
 	// Mouse Event Handler
 	class MyMouseEvent implements MouseListener, MouseMotionListener {
@@ -419,7 +492,17 @@ public class JavaGameClientView extends JFrame {
 			lblMouseEvent.setText(e.getButton() + " mouseDragged " + e.getX() + "," + e.getY());// 좌표출력가능
 //			Color c = new Color(0,0,255);
 			gc2.setColor(c);
-			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
+//			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
+			
+			startV.add(e.getPoint());
+			
+			for(int i=0;i<startV.size()-1;i++) {
+				Point start = startV.elementAt(i);
+				Point end = startV.elementAt(i+1);
+				
+				gc2.drawLine((int)start.getX(), (int)start.getY(), (int)end.getX(), (int)end.getY());
+			}
+
 			// panelImnage는 paint()에서 이용한다.
 			gc.drawImage(panelImage, 0, 0, panel);
 			SendMouseEvent(e);
@@ -435,7 +518,10 @@ public class JavaGameClientView extends JFrame {
 			lblMouseEvent.setText(e.getButton() + " mouseClicked " + e.getX() + "," + e.getY());
 //			Color c = new Color(0,0,255);
 			gc2.setColor(c);
-			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
+//			gc2.fillOval(e.getX()-pen_size/2, e.getY()-pen_size/2, pen_size, pen_size);
+			
+			startV.add(e.getPoint());
+
 			gc.drawImage(panelImage, 0, 0, panel);
 			SendMouseEvent(e);
 		}
@@ -457,21 +543,17 @@ public class JavaGameClientView extends JFrame {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mousePressed " + e.getX() + "," + e.getY());
-			startV.add(e.getPoint());
+			startV.clear();
+
+//			startV.add(e.getPoint());
 		}
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			lblMouseEvent.setText(e.getButton() + " mouseReleased " + e.getX() + "," + e.getY());
 			// 드래그중 멈출시 보임
-			endV.add(e.getPoint());
+//			endV.add(e.getPoint());
 			
-			for(int i=0;i<startV.size();i++) {
-				Point start = startV.elementAt(i);
-				Point end = endV.elementAt(i);
-				
-				gc2.drawLine((int)start.getX(), (int)start.getY(), (int)end.getX(), (int)end.getY());
-			}
 			
 //			repaint();
 		}
