@@ -19,6 +19,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -28,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -78,8 +80,9 @@ public class JavaGameClientView extends JFrame {
 	// 그려진 Image를 보관하는 용도, paint() 함수에서 이용한다.
 	private Image panelImage = null; 
 	private Graphics gc2 = null;
-	private Color c = null;
-	private int mode = 0; //0:line, 1:rectangle, 2:circle
+	private Color c = Color.BLACK;	//default = black
+	private int mode = 0; //0:line, 1:rectangle, 2:circle, 3:eraser
+	Image sketchImg = null;
 
 	Vector<Point> startV = new Vector<>();
 
@@ -201,16 +204,20 @@ public class JavaGameClientView extends JFrame {
 		lblMouseEvent.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMouseEvent.setFont(new Font("양재인장체M", Font.BOLD, 14));
 		lblMouseEvent.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblMouseEvent.setForeground(c);
 //		lblMouseEvent.setBackground(Color.WHITE);
-		lblMouseEvent.setBounds(813, 274, 230, 40);
+		lblMouseEvent.setBounds(803, 274, 241, 40);
+		lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 		lblMouseEvent.setOpaque(true);
 		contentPane.add(lblMouseEvent);
 
 		JLabel redBtn = new JLabel("", new ImageIcon("src/imgsrc/redBtn.png"), JLabel.CENTER);
-		redBtn.setBounds(813, 30, 35, 60);
+		redBtn.setBounds(813, 30, 42, 72);
 		redBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.RED;
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
+				lblMouseEvent.setForeground(c);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -229,10 +236,12 @@ public class JavaGameClientView extends JFrame {
 
 		
 		JLabel btnGreen = new JLabel("", new ImageIcon("src/imgsrc/greenBtn.png"), JLabel.CENTER);
-		btnGreen.setBounds(813, 116, 35, 60);
+		btnGreen.setBounds(813, 116, 42, 72);
 		btnGreen.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.GREEN;
+				lblMouseEvent.setForeground(c);
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -250,11 +259,13 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(btnGreen);
 
 		JLabel btnBlue = new JLabel("", new ImageIcon("src/imgsrc/blueBtn.png"), JLabel.CENTER);
-		btnBlue.setBounds(813, 193, 35, 60);
+		btnBlue.setBounds(813, 193, 42, 72);
 		contentPane.add(btnBlue);
 		btnBlue.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.BLUE;
+				lblMouseEvent.setForeground(c);
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -271,11 +282,13 @@ public class JavaGameClientView extends JFrame {
 		});
 
 		JLabel btnYellow = new JLabel("", new ImageIcon("src/imgsrc/yellowBtn.png"), JLabel.CENTER);
-		btnYellow.setBounds(870, 73, 35, 60);
+		btnYellow.setBounds(870, 73, 42, 72);
 		contentPane.add(btnYellow);
 		btnYellow.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = new Color(236, 231, 26);
+				lblMouseEvent.setForeground(new Color(242, 217, 1));
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -292,7 +305,7 @@ public class JavaGameClientView extends JFrame {
 		});
 		
 		JLabel btnPurple = new JLabel("", new ImageIcon("src/imgsrc/purpleBtn.png"), JLabel.CENTER);
-		btnPurple.setBounds(870, 160, 35, 60);
+		btnPurple.setBounds(870, 160, 42, 72);
 //		btnPurple.setBorderPainted(false);
 //		btnPurple.setContentAreaFilled(false);
 //		btnPurple.setFocusPainted(false);
@@ -301,6 +314,8 @@ public class JavaGameClientView extends JFrame {
 		btnPurple.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = new Color(175, 75, 214);
+				lblMouseEvent.setForeground(c);
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -325,7 +340,10 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(eraseBtn);
 		eraseBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
+				mode = 3;
 				c = Color.WHITE;
+				lblMouseEvent.setForeground(c);
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -389,21 +407,39 @@ public class JavaGameClientView extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (e.getSource() == sketchBtn) {
-					frame = new Frame("밑그림 이미지 선택");
-					fd = new FileDialog(frame, "밑그림 이미지 선택", FileDialog.LOAD);
-					// frame.setVisible(true);
-					// fd.setDirectory(".\\");
-					fd.setVisible(true);
-					// System.out.println(fd.getDirectory() + fd.getFile());
-					if (fd.getDirectory().length() > 0 && fd.getFile().length() > 0) {
-//						ChatMsg obcm = new ChatMsg(UserName, "300", "IMG");
-						ImageIcon img = new ImageIcon(fd.getDirectory() + fd.getFile());
-						JLabel sketchImg = new JLabel();
-						sketchImg.setBounds(273, 100, 521, 431);
-						sketchImg.setIcon(img);
+					if(sketchImg==null) {
+						frame = new Frame("밑그림 이미지 선택");
+						fd = new FileDialog(frame, "밑그림 이미지 선택", FileDialog.LOAD);
+						// frame.setVisible(true);
+						// fd.setDirectory(".\\");
+						fd.setVisible(true);
+						// System.out.println(fd.getDirectory() + fd.getFile());
+						if (fd.getDirectory().length() > 0 && fd.getFile().length() > 0) {
+							sketchImg = new ImageIcon(fd.getDirectory() + fd.getFile()).getImage();
+//							panelImage = new ImageIcon(fd.getDirectory() + fd.getFile()).getImage();
+							gc2.drawImage(sketchImg, 0, 0, panel);
+//							gc.drawImage(sketchImg, 0, 0, panel);
+							panelImage = createImage(panel.getWidth(), panel.getHeight());
+							repaint();
+//							gc = sketchImg.getGraphics();
+//							gc.drawImage(sketchImg, 0, 0, panel);
+//							gc2 = panelImage.getGraphics();
+//							gc2.setColor(panel.getBackground());
+//							gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
+//							gc2.setColor(Color.WHITE);
+//							gc2.drawRect(0,0, panel.getWidth()-1,  panel.getHeight()-1);
+
+							System.out.println(fd.getDirectory() + fd.getFile());
+						}						
+					}else {
+						sketchImg = null;
+						panelImage = createImage(panel.getWidth(), panel.getHeight());
+						gc2 = panelImage.getGraphics();
+						gc2.setColor(panel.getBackground());
+						gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
+						gc2.setColor(Color.WHITE);
+						gc2.drawRect(0,0, panel.getWidth()-1,  panel.getHeight()-1);
 						gc.drawImage(panelImage, 0, 0, panel);
-//						obcm.img = img;
-//						SendObject(obcm);
 					}
 				}
 			}
@@ -559,7 +595,7 @@ public class JavaGameClientView extends JFrame {
 //			lblMouseEvent.setText(e.getButton() + " mouseDragged " + e.getX() + "," + e.getY());// 좌표출력가능
 			gc2.setColor(c);
 			
-			if(mode == 0) {	//mode:line
+			if(mode == 0 || mode == 3) {	//mode:line
 				Graphics2D g = (Graphics2D)gc2;
 				g.setStroke(new BasicStroke(pen_size));
 				startV.add(e.getPoint());
@@ -834,6 +870,8 @@ public class JavaGameClientView extends JFrame {
 			state = "Rectangle";
 		else if(mode==2)
 			state = "Circle";
+		else if(mode==3)
+			state = "Eraser";
 		return state;
 	}
 }
