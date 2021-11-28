@@ -17,7 +17,7 @@ class ChatMsg implements Serializable {
 	public MouseEvent mouse_e;
 	public int pen_size; // pen size
 	public int color;
-	public boolean isReleased = false;
+	public Color c;
 
 	public ChatMsg(String UserName, String code, String msg) {
 		this.code = code;

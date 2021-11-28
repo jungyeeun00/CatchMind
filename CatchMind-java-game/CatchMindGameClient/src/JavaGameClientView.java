@@ -85,6 +85,7 @@ public class JavaGameClientView extends JFrame {
 	Image sketchImg = null;
 	private boolean isReleased = false;
 	private int color = 0;
+	private int ox, oy;
 
 	Vector<Point> startV = new Vector<>();
 	Vector<Point> pos_v = new Vector<>();
@@ -146,7 +147,6 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(lblUserName);
 		setVisible(true);
 
-		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
 		UserName = username;
 		lblUserName.setText(username);
 
@@ -318,7 +318,7 @@ public class JavaGameClientView extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				c = new Color(175, 75, 214);
 				lblMouseEvent.setForeground(c);
-				lblMouseEvent.setText("Mode : "+ getMode() + "|  = " + pen_size);
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -345,6 +345,7 @@ public class JavaGameClientView extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				mode = 3;
 				c = Color.WHITE;
+				color = 6;
 				lblMouseEvent.setForeground(c);
 				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
@@ -473,6 +474,38 @@ public class JavaGameClientView extends JFrame {
 			}
 		});		
 		contentPane.add(resetBtn);
+		
+		JLabel lblUserName2 = new JLabel("<dynamic>");
+		lblUserName2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName2.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName2.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName2.setBackground(Color.WHITE);
+		lblUserName2.setBounds(31, 252, 102, 50);
+		contentPane.add(lblUserName2);
+		
+		JLabel lblUserName2_1 = new JLabel("<dynamic>");
+		lblUserName2_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName2_1.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName2_1.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName2_1.setBackground(Color.WHITE);
+		lblUserName2_1.setBounds(31, 301, 102, 50);
+		contentPane.add(lblUserName2_1);
+		
+		JLabel lblUserName2_2 = new JLabel("<dynamic>");
+		lblUserName2_2.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName2_2.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName2_2.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName2_2.setBackground(Color.WHITE);
+		lblUserName2_2.setBounds(31, 349, 102, 50);
+		contentPane.add(lblUserName2_2);
+		
+		JLabel lblUserScore = new JLabel("<dynamic>");
+		lblUserScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserScore.setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserScore.setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserScore.setBackground(Color.WHITE);
+		lblUserScore.setBounds(132, 202, 102, 50);
+		contentPane.add(lblUserScore);
 
 
 		try {
@@ -557,8 +590,12 @@ public class JavaGameClientView extends JFrame {
 						AppendImage(cm.img);
 						break;
 					case "500": // Mouse Event 수신
-						DoMouseEvent(cm);
+						DoMouseEvent(cm, cm.color);
 						break;
+					case "600":	//Game Start
+						
+						break;
+						
 					}
 				} catch (IOException e) {
 					AppendText("ois.readObject() error");
@@ -580,20 +617,37 @@ public class JavaGameClientView extends JFrame {
 	}
 
 	// Mouse Event 수신 처리
-	public void DoMouseEvent(ChatMsg cm) {
+	public void DoMouseEvent(ChatMsg cm, int color) {
 //		Color c;
 		if (cm.UserName.matches(UserName)) // 본인 것은 이미 Local 로 그렸다.
 			return;
 //		c = new Color(255, 0, 0); // 다른 사람 것은 Red
-		gc2.setColor(cm.penColor(cm.color));
-		System.out.println("color : "+cm.color +", pensize:	"+cm.pen_size);
+		gc2.setColor(cm.penColor(color));
+//		gc2.setColor(cm.c);
+		System.out.println("color : "+color +", pensize:"+cm.pen_size+", mode:"+mode);
 //		gc2.fillOval(cm.mouse_e.getX() - pen_size/2, cm.mouse_e.getY() - cm.pen_size/2, cm.pen_size, cm.pen_size);
 		if(mode == 0 || mode == 3) {	//mode:line
 			Graphics2D g = (Graphics2D)gc2;
 			g.setStroke(new BasicStroke(cm.pen_size));
 
+//			if(cm.mouse_e.getID()==MouseEvent.MOUSE_PRESSED) {
+//				System.out.println("pressed\n");
+//				ox = cm.mouse_e.getX();
+//				oy = cm.mouse_e.getY();
+//			}else {
+//				if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED)
+//					System.out.println("released\n");
+//				else
+//					System.out.println("drag\n");
+//
+//				int nx = cm.mouse_e.getX();
+//				int ny = cm.mouse_e.getY();
+//				gc2.drawLine((int)ox, (int)oy, (int)nx, (int)ny);
+//				ox = nx;
+//				oy = ny;
+//			}
+
 			pos_v.add(cm.mouse_e.getPoint());
-			System.out.println("pos:"+pos_v.size());
 			if(pos_v.size()==1) {
 				pos_v.add(cm.mouse_e.getPoint());
 				return;
@@ -602,18 +656,24 @@ public class JavaGameClientView extends JFrame {
 				Point start = pos_v.elementAt(i);
 				Point end = pos_v.elementAt(i+1);
 				gc2.drawLine((int)start.getX(), (int)start.getY(), (int)end.getX(), (int)end.getY());
-			}	
+			}
 			gc.drawImage(panelImage, 0, 0, panel);
-
+			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED)
+				pos_v.removeAllElements();
+			
 		}else if(mode == 1) {	//mode:rectangle
 
-//			startV.add(e.getPoint());
+			pos_v.add(cm.mouse_e.getPoint());
 
-//			Point start = cm.pos_v.elementAt(0);
-//			for(int i=1;i<cm.pos_v.size()-1;i++) {
-//				Point end = cm.pos_v.elementAt(i+1);
-//				gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
-//			}				
+			Point start = pos_v.elementAt(0);
+			for(int i=1;i<pos_v.size()-1;i++) {
+				Point end = pos_v.elementAt(i+1);
+				gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+			}		
+			gc.drawImage(panelImage, 0, 0, panel);
+
+			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED)
+				pos_v.removeAllElements();
 		}else if(mode == 2) {//mode:circle
 
 //			startV.add(e.getPoint());
@@ -632,9 +692,9 @@ public class JavaGameClientView extends JFrame {
 		cm.mouse_e = e;
 		cm.pen_size = pen_size;
 		cm.color = color;
-		System.out.println(">>color : "+cm.color +", pensize:	"+cm.pen_size);
+		cm.c = c;
+		System.out.println(">>color : "+cm.color+", pensize:"+cm.pen_size);
 
-		cm.isReleased = isReleased; 
 		SendObject(cm);
 	}
 
@@ -688,11 +748,11 @@ public class JavaGameClientView extends JFrame {
 			}else if(mode == 2) {//mode:circle
 				startV.add(e.getPoint());
 
-//				Point start = startV.elementAt(0);
-//				for(int i=1;i<startV.size()-1;i++) {
-//					Point end = startV.elementAt(i+1);
-//					gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
-//				}
+				Point start = startV.elementAt(0);
+				for(int i=1;i<startV.size()-1;i++) {
+					Point end = startV.elementAt(i+1);
+					gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				}
 			}
 
 			// panelImnage는 paint()에서 이용한다.
