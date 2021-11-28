@@ -34,6 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -55,6 +56,7 @@ public class JavaGameClientView extends JFrame {
 	private JTextField txtInput;
 	private String UserName;
 	private JButton btnSend;
+	private JLabel startBtn;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
 	private InputStream is;
@@ -72,7 +74,17 @@ public class JavaGameClientView extends JFrame {
 	private Frame frame;
 	private FileDialog fd;
 	private JButton imgBtn;
-
+	private JLabel redBtn;
+	private JLabel btnGreen;
+	private JLabel btnBlue;
+	private JLabel btnYellow;
+	private JLabel btnPurple;
+	private JLabel eraseBtn;
+	private JButton rectangeBtn;
+	private JButton circleBtn;
+	private JButton penBtn;
+	private JButton sketchBtn;
+	
 	JPanel panel;
 	private JLabel lblMouseEvent;
 	private Graphics gc;
@@ -86,6 +98,7 @@ public class JavaGameClientView extends JFrame {
 	private boolean isReleased = false;
 	private int color = 0;
 	private int ox, oy;
+	String answer;
 
 	Vector<Point> startV = new Vector<>();
 	Vector<Point> pos_v = new Vector<>();
@@ -213,7 +226,7 @@ public class JavaGameClientView extends JFrame {
 		lblMouseEvent.setOpaque(true);
 		contentPane.add(lblMouseEvent);
 
-		JLabel redBtn = new JLabel("", new ImageIcon("src/imgsrc/redBtn.png"), JLabel.CENTER);
+		redBtn = new JLabel("", new ImageIcon("src/imgsrc/redBtn.png"), JLabel.CENTER);
 		redBtn.setBounds(813, 30, 42, 72);
 		redBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
@@ -238,7 +251,7 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(redBtn);
 
 		
-		JLabel btnGreen = new JLabel("", new ImageIcon("src/imgsrc/greenBtn.png"), JLabel.CENTER);
+		btnGreen = new JLabel("", new ImageIcon("src/imgsrc/greenBtn.png"), JLabel.CENTER);
 		btnGreen.setBounds(813, 116, 42, 72);
 		btnGreen.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
@@ -261,7 +274,7 @@ public class JavaGameClientView extends JFrame {
 		});
 		contentPane.add(btnGreen);
 
-		JLabel btnBlue = new JLabel("", new ImageIcon("src/imgsrc/blueBtn.png"), JLabel.CENTER);
+		btnBlue = new JLabel("", new ImageIcon("src/imgsrc/blueBtn.png"), JLabel.CENTER);
 		btnBlue.setBounds(813, 193, 42, 72);
 		contentPane.add(btnBlue);
 		btnBlue.addMouseListener(new MouseListener() {
@@ -284,7 +297,7 @@ public class JavaGameClientView extends JFrame {
 			}
 		});
 
-		JLabel btnYellow = new JLabel("", new ImageIcon("src/imgsrc/yellowBtn.png"), JLabel.CENTER);
+		btnYellow = new JLabel("", new ImageIcon("src/imgsrc/yellowBtn.png"), JLabel.CENTER);
 		btnYellow.setBounds(870, 73, 42, 72);
 		contentPane.add(btnYellow);
 		btnYellow.addMouseListener(new MouseListener() {
@@ -307,7 +320,7 @@ public class JavaGameClientView extends JFrame {
 			}
 		});
 		
-		JLabel btnPurple = new JLabel("", new ImageIcon("src/imgsrc/purpleBtn.png"), JLabel.CENTER);
+		btnPurple = new JLabel("", new ImageIcon("src/imgsrc/purpleBtn.png"), JLabel.CENTER);
 		btnPurple.setBounds(870, 160, 42, 72);
 //		btnPurple.setBorderPainted(false);
 //		btnPurple.setContentAreaFilled(false);
@@ -334,7 +347,7 @@ public class JavaGameClientView extends JFrame {
 			}
 		});
 		
-		JLabel eraseBtn = new JLabel("", new ImageIcon("src/imgsrc/eraserBtn.png"), JLabel.CENTER);
+		eraseBtn = new JLabel("", new ImageIcon("src/imgsrc/eraserBtn.png"), JLabel.CENTER);
 		eraseBtn.setBounds(954, 100, 68, 70);
 //		eraseBtn.setBorderPainted(false);
 //		eraseBtn.setContentAreaFilled(false);
@@ -369,7 +382,7 @@ public class JavaGameClientView extends JFrame {
 		lblNewLabel.setBounds(91, 165, 83, 31);
 		contentPane.add(lblNewLabel);
 
-		JButton rectangeBtn = new JButton(new ImageIcon("src/imgsrc/rectangle_btn.png"));
+		rectangeBtn = new JButton(new ImageIcon("src/imgsrc/rectangle_btn.png"));
 //		rectangeBtn.setContentAreaFilled(false);
 //		rectangeBtn.setFocusPainted(false);
 //		rectangeBtn.setOpaque(true);
@@ -383,7 +396,7 @@ public class JavaGameClientView extends JFrame {
 		});
 		contentPane.add(rectangeBtn);
 		
-		JButton circleBtn = new JButton(new ImageIcon("src/imgsrc/circle_btn.png"));
+		circleBtn = new JButton(new ImageIcon("src/imgsrc/circle_btn.png"));
 		circleBtn.setOpaque(true);
 		circleBtn.setBounds(595, 550, 45, 45);
 		circleBtn.addActionListener(new ActionListener() {
@@ -395,7 +408,7 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(circleBtn);
 
 		
-		JButton penBtn = new JButton(new ImageIcon("src/imgsrc/penBtn.png"));
+		penBtn = new JButton(new ImageIcon("src/imgsrc/penBtn.png"));
 		penBtn.setBounds(435, 550, 45, 45);
 		penBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -405,7 +418,7 @@ public class JavaGameClientView extends JFrame {
 		});
 		contentPane.add(penBtn);
 		
-		JButton sketchBtn = new JButton("sketch");
+		sketchBtn = new JButton("sketch");
 		sketchBtn.setFont(new Font("Bradley Hand ITC", Font.BOLD, 18));
 		sketchBtn.setBounds(293, 550, 91, 45);
 		sketchBtn.addActionListener(new ActionListener() {
@@ -455,10 +468,8 @@ public class JavaGameClientView extends JFrame {
 		resetBtn.setBounds(690, 550, 50, 45);
 		resetBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("reset");
-				gc2.setColor(panel.getBackground());
-				gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
-				gc.drawImage(panelImage, 0, 0, panel);
+				ChatMsg cm = new ChatMsg(UserName, "501", "RESET");
+				SendObject(cm);
 			}
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -474,6 +485,31 @@ public class JavaGameClientView extends JFrame {
 			}
 		});		
 		contentPane.add(resetBtn);
+
+		startBtn = new JLabel("Game Start");
+		startBtn.setForeground(Color.BLACK);
+		startBtn.setBackground(Color.GRAY);
+		startBtn.setFont(new Font("굴림", Font.PLAIN, 15));
+		startBtn.setBounds(956, 237, 87, 27);
+		startBtn.addMouseListener(new MouseListener() {
+			public void mouseClicked(MouseEvent e) {
+				ChatMsg cm = new ChatMsg(UserName, "600", "GAMESTART");
+				SendObject(cm);
+			}
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+		});		
+		contentPane.add(startBtn);		
 		
 		JLabel lblUserName2 = new JLabel("<dynamic>");
 		lblUserName2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -506,6 +542,8 @@ public class JavaGameClientView extends JFrame {
 		lblUserScore.setBackground(Color.WHITE);
 		lblUserScore.setBounds(132, 202, 102, 50);
 		contentPane.add(lblUserScore);
+		
+
 
 
 		try {
@@ -581,6 +619,10 @@ public class JavaGameClientView extends JFrame {
 							AppendTextR(msg); // 내 메세지는 우측에
 						else
 							AppendText(msg);
+						if(cm.data.equals(answer)){
+							ChatMsg cmsg = new ChatMsg(UserName, "700", "GAMEOVER");
+							SendObject(cmsg);
+						}
 						break;
 					case "300": // Image 첨부
 						if (cm.UserName.equals(UserName))
@@ -592,10 +634,15 @@ public class JavaGameClientView extends JFrame {
 					case "500": // Mouse Event 수신
 						DoMouseEvent(cm, cm.color);
 						break;
-					case "600":	//Game Start
-						
+					case "501":
+						ResetCanvas();
 						break;
-						
+					case "600":	//Game Start
+						GameStart(cm);
+						break;
+					case "700":
+						GameOver(cm);
+						break;
 					}
 				} catch (IOException e) {
 					AppendText("ois.readObject() error");
@@ -615,7 +662,56 @@ public class JavaGameClientView extends JFrame {
 			}
 		}
 	}
+	
+	public void ResetCanvas() {
+		gc2.setColor(panel.getBackground());
+		gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
+		gc.drawImage(panelImage, 0, 0, panel);
+	}
 
+	public void GameStart(ChatMsg cm) {
+		ResetCanvas();
+		if (cm.UserName.equals(UserName)) {
+			GameAnswer g = new GameAnswer();
+			answer = g.getAnswer();
+			JOptionPane.showMessageDialog(panel, "출제할 문제는 '"+answer+"' 입니다");			
+		}else {
+			c = Color.WHITE;
+			redBtn.setEnabled(false);
+			btnGreen.setEnabled(false);
+			btnYellow.setEnabled(false);
+			btnPurple.setEnabled(false);
+			btnBlue.setEnabled(false);
+			eraseBtn.setEnabled(false);
+			rectangeBtn.setEnabled(false);
+			circleBtn.setEnabled(false);
+			penBtn.setEnabled(false);
+			sketchBtn.setEnabled(false);
+		}
+		startBtn.setEnabled(false);
+	}
+	
+	public void GameOver(ChatMsg cm) {
+		if (cm.UserName.equals(UserName))
+			JOptionPane.showMessageDialog(panel, cm.UserName+"님이 맞추셨습니다!\n 정답 : '"+answer+"'");			
+		else {
+			JOptionPane.showMessageDialog(panel, "정답입니다");
+			redBtn.setEnabled(true);
+			btnGreen.setEnabled(true);
+			btnYellow.setEnabled(true);
+			btnPurple.setEnabled(true);
+			btnBlue.setEnabled(true);
+			eraseBtn.setEnabled(true);
+			rectangeBtn.setEnabled(true);
+			circleBtn.setEnabled(true);
+			penBtn.setEnabled(true);
+			sketchBtn.setEnabled(true);			
+		}
+		System.out.println("username:"+cm.UserName+", "+UserName);
+		startBtn.setEnabled(true);
+		ResetCanvas();
+	}
+	
 	// Mouse Event 수신 처리
 	public void DoMouseEvent(ChatMsg cm, int color) {
 //		Color c;
@@ -854,7 +950,6 @@ public class JavaGameClientView extends JFrame {
 	}
 
 	ImageIcon icon1 = new ImageIcon("src/icon1.jpg");
-	private JButton eraseBtn;
 
 	public void AppendIcon(ImageIcon icon) {
 		int len = textArea.getDocument().getLength();
