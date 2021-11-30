@@ -18,6 +18,8 @@ class ChatMsg implements Serializable {
 	public int pen_size; // pen size
 	public int color;
 	public Color c;
+	public int score=0;
+	public String answer;
 
 	public ChatMsg(String UserName, String code, String msg) {
 		this.code = code;

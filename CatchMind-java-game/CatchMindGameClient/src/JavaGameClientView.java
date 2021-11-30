@@ -67,7 +67,13 @@ public class JavaGameClientView extends JFrame {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 
-	private JLabel lblUserName;
+//	private JLabel lblUserName;
+//	private JLabel lblUserName2;
+//	private JLabel lblUserName3;
+//	private JLabel lblUserName4;
+	private JLabel [] lblUserName = new JLabel[4];
+	private JLabel [] lblUserScore = new JLabel[4];
+	private int []score = {0};
 	// private JTextArea textArea;
 	private JTextPane textArea;
 
@@ -95,7 +101,6 @@ public class JavaGameClientView extends JFrame {
 	private Color c = Color.BLACK;	//default = black
 	private int mode = 0; //0:line, 1:rectangle, 2:circle, 3:eraser
 	Image sketchImg = null;
-	private boolean isReleased = false;
 	private int color = 0;
 	private int ox, oy;
 	String answer;
@@ -151,17 +156,17 @@ public class JavaGameClientView extends JFrame {
 		btnSend.setBounds(796, 538, 50, 34);
 		contentPane.add(btnSend);
 
-		lblUserName = new JLabel("Name");
-		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserName.setBackground(Color.WHITE);
-		lblUserName.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName.setBounds(31, 202, 102, 50);
-		contentPane.add(lblUserName);
+		lblUserName[0] = new JLabel("");
+		lblUserName[0].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName[0].setBackground(Color.WHITE);
+		lblUserName[0].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName[0].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName[0].setBounds(31, 202, 102, 50);
+		contentPane.add(lblUserName[0]);
 		setVisible(true);
 
 		UserName = username;
-		lblUserName.setText(username);
+//		lblUserName[0].setText(username);
 
 		imgBtn = new JButton("+");
 		imgBtn.setFont(new Font("굴림", Font.PLAIN, 11));
@@ -256,6 +261,7 @@ public class JavaGameClientView extends JFrame {
 		btnGreen.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.GREEN;
+				color = 3;
 				lblMouseEvent.setForeground(c);
 				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
@@ -280,6 +286,7 @@ public class JavaGameClientView extends JFrame {
 		btnBlue.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = Color.BLUE;
+				color = 5;
 				lblMouseEvent.setForeground(c);
 				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
@@ -303,6 +310,7 @@ public class JavaGameClientView extends JFrame {
 		btnYellow.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = new Color(236, 231, 26);
+				color = 2;
 				lblMouseEvent.setForeground(new Color(242, 217, 1));
 				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
@@ -330,6 +338,7 @@ public class JavaGameClientView extends JFrame {
 		btnPurple.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				c = new Color(175, 75, 214);
+				color = 4;
 				lblMouseEvent.setForeground(c);
 				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
 			}
@@ -486,11 +495,10 @@ public class JavaGameClientView extends JFrame {
 		});		
 		contentPane.add(resetBtn);
 
-		startBtn = new JLabel("Game Start");
+		startBtn = new JLabel("", new ImageIcon("src/imgsrc/start.png"), JLabel.CENTER);
 		startBtn.setForeground(Color.BLACK);
 		startBtn.setBackground(Color.GRAY);
-		startBtn.setFont(new Font("굴림", Font.PLAIN, 15));
-		startBtn.setBounds(956, 237, 87, 27);
+		startBtn.setBounds(77, 460, 100, 100);
 		startBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				ChatMsg cm = new ChatMsg(UserName, "600", "GAMESTART");
@@ -511,37 +519,61 @@ public class JavaGameClientView extends JFrame {
 		});		
 		contentPane.add(startBtn);		
 		
-		JLabel lblUserName2 = new JLabel("<dynamic>");
-		lblUserName2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName2.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblUserName2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserName2.setBackground(Color.WHITE);
-		lblUserName2.setBounds(31, 252, 102, 50);
-		contentPane.add(lblUserName2);
+		lblUserName[1] = new JLabel("");
+		lblUserName[1].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName[1].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName[1].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName[1].setBackground(Color.WHITE);
+		lblUserName[1].setBounds(31, 252, 102, 50);
+		contentPane.add(lblUserName[1]);
 		
-		JLabel lblUserName2_1 = new JLabel("<dynamic>");
-		lblUserName2_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName2_1.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblUserName2_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserName2_1.setBackground(Color.WHITE);
-		lblUserName2_1.setBounds(31, 301, 102, 50);
-		contentPane.add(lblUserName2_1);
+		lblUserName[2] = new JLabel("");
+		lblUserName[2].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName[2].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName[2].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName[2].setBackground(Color.WHITE);
+		lblUserName[2].setBounds(31, 301, 102, 50);
+		contentPane.add(lblUserName[2]);
 		
-		JLabel lblUserName2_2 = new JLabel("<dynamic>");
-		lblUserName2_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName2_2.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblUserName2_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserName2_2.setBackground(Color.WHITE);
-		lblUserName2_2.setBounds(31, 349, 102, 50);
-		contentPane.add(lblUserName2_2);
+		lblUserName[3] = new JLabel("");
+		lblUserName[3].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserName[3].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserName[3].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserName[3].setBackground(Color.WHITE);
+		lblUserName[3].setBounds(31, 349, 102, 50);
+		contentPane.add(lblUserName[3]);
 		
-		JLabel lblUserScore = new JLabel("<dynamic>");
-		lblUserScore.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserScore.setFont(new Font("양재인장체M", Font.BOLD, 16));
-		lblUserScore.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserScore.setBackground(Color.WHITE);
-		lblUserScore.setBounds(132, 202, 102, 50);
-		contentPane.add(lblUserScore);
+		lblUserScore[0] = new JLabel("");
+		lblUserScore[0].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserScore[0].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserScore[0].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserScore[0].setBackground(Color.WHITE);
+		lblUserScore[0].setBounds(132, 202, 102, 50);
+		contentPane.add(lblUserScore[0]);
+		
+		lblUserScore[1] = new JLabel("");
+		lblUserScore[1].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserScore[1].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserScore[1].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserScore[1].setBackground(Color.WHITE);
+		lblUserScore[1].setBounds(132, 251, 102, 50);
+		contentPane.add(lblUserScore[1]);
+		
+		lblUserScore[2] = new JLabel("");
+		lblUserScore[2].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserScore[2].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserScore[2].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserScore[2].setBackground(Color.WHITE);
+		lblUserScore[2].setBounds(132, 300, 102, 50);
+		contentPane.add(lblUserScore[2]);
+		
+		lblUserScore[3] = new JLabel("");
+		lblUserScore[3].setHorizontalAlignment(SwingConstants.CENTER);
+		lblUserScore[3].setFont(new Font("양재인장체M", Font.BOLD, 16));
+		lblUserScore[3].setBorder(new LineBorder(new Color(0, 0, 0)));
+		lblUserScore[3].setBackground(Color.WHITE);
+		lblUserScore[3].setBounds(132, 349, 102, 50);
+		contentPane.add(lblUserScore[3]);
 		
 
 
@@ -614,6 +646,8 @@ public class JavaGameClientView extends JFrame {
 					} else
 						continue;
 					switch (cm.code) {
+					case "101":
+						UpdateUserlist(cm.data);
 					case "200": // chat message
 						if (cm.UserName.equals(UserName))
 							AppendTextR(msg); // 내 메세지는 우측에
@@ -663,6 +697,16 @@ public class JavaGameClientView extends JFrame {
 		}
 	}
 	
+	public void UpdateUserlist(String users) {
+		for(int i=0;i<lblUserName.length;i++)
+			lblUserName[i].setText("");
+		
+		String[] username = users.split(",");
+		for(int i=0;i<username.length;i++) {
+			lblUserName[i].setText(username[i]);
+		}
+	}
+	
 	public void ResetCanvas() {
 		gc2.setColor(panel.getBackground());
 		gc2.fillRect(0,0, panel.getWidth(),  panel.getHeight());
@@ -692,8 +736,16 @@ public class JavaGameClientView extends JFrame {
 	}
 	
 	public void GameOver(ChatMsg cm) {
-		if (cm.UserName.equals(UserName))
+		if (cm.UserName.equals(UserName)) {
 			JOptionPane.showMessageDialog(panel, cm.UserName+"님이 맞추셨습니다!\n 정답 : '"+answer+"'");			
+			for(int i=0;i<lblUserName.length;i++) {
+				if(lblUserName[i].getText().equals(UserName)){
+					score[i]+=10;
+					lblUserScore[i].setText(Integer.toString(score[i]));
+					break;
+				}
+			}
+		}
 		else {
 			JOptionPane.showMessageDialog(panel, "정답입니다");
 			redBtn.setEnabled(true);
@@ -819,12 +871,10 @@ public class JavaGameClientView extends JFrame {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			myMouseEvent = e;
-			lblMouseEvent.setText(e.getButton() + " mouseDragged " + e.getX() + "," + e.getY());// 좌표출력가능
+//			lblMouseEvent.setText(e.getButton() + " mouseDragged " + e.getX() + "," + e.getY());// 좌표출력가능
 			gc2.setColor(c);
 			
 			if(mode == 0 || mode == 3) {	//mode:line
-				isReleased = false;
-
 				Graphics2D g = (Graphics2D)gc2;
 				g.setStroke(new BasicStroke(pen_size));
 				startV.add(e.getPoint());
@@ -867,7 +917,6 @@ public class JavaGameClientView extends JFrame {
 			gc2.setColor(c);
 			
 			startV.add(e.getPoint());
-			isReleased = false;
 			gc.drawImage(panelImage, 0, 0, panel);
 			SendMouseEvent(e);
 		}
@@ -903,9 +952,8 @@ public class JavaGameClientView extends JFrame {
 			}
 			gc.drawImage(panelImage, 0, 0, panel);
 			pos_v.clear();
-			isReleased = true;
 			SendMouseEvent(e);
-			lblMouseEvent.setText(e.getButton() + " mouseReleased " + e.getX() + "," + e.getY());
+//			lblMouseEvent.setText(e.getButton() + " mouseReleased " + e.getX() + "," + e.getY());
 			startV.clear();		
 		}
 	}
@@ -920,6 +968,7 @@ public class JavaGameClientView extends JFrame {
 				// msg = String.format("[%s] %s\n", UserName, txtInput.getText());
 				msg = txtInput.getText();
 				SendMessage(msg);
+//				IsAnswer(msg);
 				txtInput.setText(""); // 메세지를 보내고 나면 메세지 쓰는창을 비운다.
 				txtInput.requestFocus(); // 메세지를 보내고 커서를 다시 텍스트 필드로 위치시킨다
 				if (msg.contains("/exit")) // 종료 처리
@@ -951,6 +1000,14 @@ public class JavaGameClientView extends JFrame {
 
 	ImageIcon icon1 = new ImageIcon("src/icon1.jpg");
 
+//	public void IsAnswer(String word) {
+//		System.out.println(word+","+answer);
+//		if(word.equals(answer)){
+//			ChatMsg cmsg = new ChatMsg(UserName, "700", "GAMEOVER");
+//			SendObject(cmsg);
+//		}
+//	}
+	
 	public void AppendIcon(ImageIcon icon) {
 		int len = textArea.getDocument().getLength();
 		// 끝으로 이동
