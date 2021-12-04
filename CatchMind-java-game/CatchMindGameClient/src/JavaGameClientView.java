@@ -46,6 +46,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import javax.swing.Icon;
 
 public class JavaGameClientView extends JFrame {
 	/**
@@ -99,7 +100,7 @@ public class JavaGameClientView extends JFrame {
 	private Image panelImage = null; 
 	private Graphics gc2 = null;
 	private Color c = Color.BLACK;	//default = black
-	private int mode = 0; //0:line, 1:rectangle, 2:circle, 3:eraser
+	private int mode = 0; //0:line, 1:rectangle, 2:circle, 3:eraser, 4:fillrect, 5:fillcircle
 	Image sketchImg = null;
 	private int color = 0;
 	private int ox, oy;
@@ -390,7 +391,7 @@ public class JavaGameClientView extends JFrame {
 //		rectangeBtn.setContentAreaFilled(false);
 //		rectangeBtn.setFocusPainted(false);
 //		rectangeBtn.setOpaque(true);
-		rectangleBtn.setBounds(515, 550, 45, 45);
+		rectangleBtn.setBounds(467, 550, 45, 45);
 		rectangleBtn.setBorderPainted(false);
 		rectangleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -400,9 +401,21 @@ public class JavaGameClientView extends JFrame {
 		});
 		contentPane.add(rectangleBtn);
 		
+		JButton fillrectangleBtn = new JButton(new ImageIcon("src/imgsrc/fillrect_btn.png"));
+		fillrectangleBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mode = 4;
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
+			}
+		});
+		fillrectangleBtn.setBorderPainted(false);
+		fillrectangleBtn.setBounds(524, 550, 45, 45);
+		contentPane.add(fillrectangleBtn);
+		
+
 		circleBtn = new JButton(new ImageIcon("src/imgsrc/circle_btn.png"));
 		circleBtn.setOpaque(true);
-		circleBtn.setBounds(595, 550, 45, 45);
+		circleBtn.setBounds(581, 550, 45, 45);
 		circleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mode = 2;
@@ -411,9 +424,19 @@ public class JavaGameClientView extends JFrame {
 		});
 		contentPane.add(circleBtn);
 
-		
+		JButton fillcircleBtn = new JButton(new ImageIcon("src/imgsrc/fillcircle_btn.png"));
+		fillcircleBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mode = 5;
+				lblMouseEvent.setText("Mode : "+ getMode() + "| pen_size = " + pen_size);
+			}
+		});
+		fillcircleBtn.setOpaque(true);
+		fillcircleBtn.setBounds(638, 550, 45, 45);
+		contentPane.add(fillcircleBtn);
+				
 		penBtn = new JButton(new ImageIcon("src/imgsrc/penBtn.png"));
-		penBtn.setBounds(435, 550, 45, 45);
+		penBtn.setBounds(410, 550, 45, 45);
 		penBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				mode = 0;
@@ -469,7 +492,7 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(sketchBtn);
 		
 		JLabel resetBtn = new JLabel("", new ImageIcon("src/imgsrc/reset.png"), JLabel.CENTER);
-		resetBtn.setBounds(690, 550, 50, 45);
+		resetBtn.setBounds(697, 550, 50, 45);
 		resetBtn.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 				ChatMsg cm = new ChatMsg(UserName, "501", "RESET");
@@ -569,6 +592,8 @@ public class JavaGameClientView extends JFrame {
 		lblUserScore[3].setBackground(Color.WHITE);
 		lblUserScore[3].setBounds(132, 349, 102, 50);
 		contentPane.add(lblUserScore[3]);
+		
+
 		
 
 
@@ -769,9 +794,9 @@ public class JavaGameClientView extends JFrame {
 //		gc2.setColor(cm.c);
 		System.out.println("color : "+color +", pensize:"+cm.pen_size+", mode:"+cm.mode);
 //		gc2.fillOval(cm.mouse_e.getX() - pen_size/2, cm.mouse_e.getY() - cm.pen_size/2, cm.pen_size, cm.pen_size);
+		Graphics2D g = (Graphics2D)gc2;
+		g.setStroke(new BasicStroke(cm.pen_size));
 		if(mode == 0 || mode == 3) {	//mode:line
-			Graphics2D g = (Graphics2D)gc2;
-			g.setStroke(new BasicStroke(cm.pen_size));
 
 //			if(cm.mouse_e.getID()==MouseEvent.MOUSE_PRESSED) {
 //				System.out.println("pressed\n");
@@ -815,11 +840,41 @@ public class JavaGameClientView extends JFrame {
 //			}		
 
 			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED) {
-				gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 				gc.drawImage(panelImage, 0, 0, panel);				
 				pos_v.removeAllElements();
 			}
 		}else if(mode == 2) {//mode:circle
+
+			pos_v.add(cm.mouse_e.getPoint());
+
+			Point start = pos_v.elementAt(0);
+			Point end = pos_v.elementAt(pos_v.size()-1);
+//			for(int i=1;i<pos_v.size()-1;i++) {
+//				Point end = pos_v.elementAt(i+1);
+//			}		
+
+			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED) {
+				gc2.drawOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));				
+				gc.drawImage(panelImage, 0, 0, panel);
+				pos_v.removeAllElements();
+			}
+		}else if(mode == 4) {	//mode:fillrectangle
+
+			pos_v.add(cm.mouse_e.getPoint());
+
+			Point start = pos_v.elementAt(0);
+			Point end = pos_v.elementAt(pos_v.size()-1);
+//			for(int i=1;i<pos_v.size()-1;i++) {
+//				Point end = pos_v.elementAt(i+1);
+//			}		
+
+			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED) {
+				gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				gc.drawImage(panelImage, 0, 0, panel);				
+				pos_v.removeAllElements();
+			}
+		}else if(mode == 5) {//mode:fillcircle
 
 			pos_v.add(cm.mouse_e.getPoint());
 
@@ -890,11 +945,11 @@ public class JavaGameClientView extends JFrame {
 			}else if(mode == 1) {	//mode:rectangle
 				startV.add(e.getPoint());
 
-				Point start = startV.elementAt(0);
-				for(int i=1;i<startV.size()-1;i++) {
-					Point end = startV.elementAt(i+1);
-					gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
-				}				
+//				Point start = startV.elementAt(0);
+//				for(int i=1;i<startV.size()-1;i++) {
+//					Point end = startV.elementAt(i+1);
+//					gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+//				}				
 			}else if(mode == 2) {//mode:circle
 				startV.add(e.getPoint());
 
@@ -903,6 +958,16 @@ public class JavaGameClientView extends JFrame {
 //					Point end = startV.elementAt(i+1);
 //					gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 //				}
+			}else if(mode == 4) {	//mode:fillrectangle
+				startV.add(e.getPoint());
+
+				Point start = startV.elementAt(0);
+				for(int i=1;i<startV.size()-1;i++) {
+					Point end = startV.elementAt(i+1);
+					gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				}				
+			}else if(mode == 5) {	//mode:fillcircle
+				startV.add(e.getPoint());			
 			}
 
 			// panelImnage는 paint()에서 이용한다.
@@ -948,8 +1013,19 @@ public class JavaGameClientView extends JFrame {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			// 드래그중 멈출시 보임			
-			if(mode == 2) {
+			// 드래그중 멈출시 보임
+			Graphics2D g = (Graphics2D)gc2;
+			g.setStroke(new BasicStroke(pen_size));
+
+			if(mode == 1) {	//mode:rectangle
+				Point start = startV.elementAt(0);
+				Point end = startV.elementAt(startV.size()-1);
+				gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+			}else if(mode == 2) {	//mode:circle
+				Point start = startV.elementAt(0);
+				Point end = startV.elementAt(startV.size()-1);
+				gc2.drawOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+			}else if(mode == 5) {	//mode:fillcircle
 				Point start = startV.elementAt(0);
 				Point end = startV.elementAt(startV.size()-1);
 				gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
@@ -1161,6 +1237,10 @@ public class JavaGameClientView extends JFrame {
 			state = "Circle";
 		else if(mode==3)
 			state = "Eraser";
+		else if(mode==4)
+			state = "FillRectangle";
+		else if(mode==5)
+			state = "FillCircle";
 		return state;
 	}
 }
