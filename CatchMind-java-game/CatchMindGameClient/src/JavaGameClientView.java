@@ -792,7 +792,7 @@ public class JavaGameClientView extends JFrame {
 //		c = new Color(255, 0, 0); // 다른 사람 것은 Red
 		gc2.setColor(cm.penColor(color));
 //		gc2.setColor(cm.c);
-		System.out.println("color : "+color +", pensize:"+cm.pen_size+", mode:"+cm.mode);
+//		System.out.println("color : "+color +", pensize:"+cm.pen_size+", mode:"+cm.mode);
 //		gc2.fillOval(cm.mouse_e.getX() - pen_size/2, cm.mouse_e.getY() - cm.pen_size/2, cm.pen_size, cm.pen_size);
 		Graphics2D g = (Graphics2D)gc2;
 		g.setStroke(new BasicStroke(cm.pen_size));
@@ -838,6 +838,8 @@ public class JavaGameClientView extends JFrame {
 //			for(int i=1;i<pos_v.size()-1;i++) {
 //				Point end = pos_v.elementAt(i+1);
 //			}		
+			
+
 
 			if(cm.mouse_e.getID()==MouseEvent.MOUSE_RELEASED) {
 				gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
@@ -900,7 +902,7 @@ public class JavaGameClientView extends JFrame {
 		cm.color = color;
 		cm.mode = mode;
 		cm.c = c;
-		System.out.println(">>color : "+cm.color+", pensize:"+cm.pen_size);
+//		System.out.println(">>color : "+cm.color+", pensize:"+cm.pen_size);
 
 		SendObject(cm);
 	}
@@ -962,9 +964,21 @@ public class JavaGameClientView extends JFrame {
 				startV.add(e.getPoint());
 
 				Point start = startV.elementAt(0);
-				for(int i=1;i<startV.size()-1;i++) {
+				int old_x = 0, old_y=0, old_w=0, old_h=0;
+				for(int i=0;i<startV.size()-1;i++) {
+
 					Point end = startV.elementAt(i+1);
-					gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+					int x = (int) Math.min(start.getX(), end.getX());
+					int y = (int) Math.min(start.getY(), end.getY());
+					int w = Math.abs((int)start.getX()-(int)end.getX());
+					int h = Math.abs((int)start.getY()-(int)end.getY());
+					gc2.fillRect(x, y, w, h);
+					old_x=x;
+					old_y=y;
+					old_w=w;
+					old_h=h;
+
+//					gc2.fillRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 				}				
 			}else if(mode == 5) {	//mode:fillcircle
 				startV.add(e.getPoint());			
@@ -1020,15 +1034,33 @@ public class JavaGameClientView extends JFrame {
 			if(mode == 1) {	//mode:rectangle
 				Point start = startV.elementAt(0);
 				Point end = startV.elementAt(startV.size()-1);
-				gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				int x = (int) Math.min(start.getX(), end.getX());
+				int y = (int) Math.min(start.getY(), end.getY());
+				int w = Math.abs((int)start.getX()-(int)end.getX());
+				int h = Math.abs((int)start.getY()-(int)end.getY());
+				gc2.drawRect(x, y, Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+
+//				gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 			}else if(mode == 2) {	//mode:circle
 				Point start = startV.elementAt(0);
 				Point end = startV.elementAt(startV.size()-1);
-				gc2.drawOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				int x = (int) Math.min(start.getX(), end.getX());
+				int y = (int) Math.min(start.getY(), end.getY());
+				int w = Math.abs((int)start.getX()-(int)end.getX());
+				int h = Math.abs((int)start.getY()-(int)end.getY());
+				gc2.drawOval(x, y, Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+
+//				gc2.drawOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 			}else if(mode == 5) {	//mode:fillcircle
 				Point start = startV.elementAt(0);
 				Point end = startV.elementAt(startV.size()-1);
-				gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+				int x = (int) Math.min(start.getX(), end.getX());
+				int y = (int) Math.min(start.getY(), end.getY());
+				int w = Math.abs((int)start.getX()-(int)end.getX());
+				int h = Math.abs((int)start.getY()-(int)end.getY());
+				gc2.fillOval(x, y, Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
+
+//				gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
 			}
 			gc.drawImage(panelImage, 0, 0, panel);
 			pos_v.clear();
