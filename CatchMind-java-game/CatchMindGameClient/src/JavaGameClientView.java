@@ -156,7 +156,6 @@ public class JavaGameClientView extends JFrame {
 		contentPane.add(btnSend);
 
 		lblUserName[0] = new JLabel("");
-//		lblUserName[0].setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblUserName[0].setBackground(Color.WHITE);
 		lblUserName[0].setFont(new Font("양재인장체M", Font.BOLD, 16));
 		lblUserName[0].setHorizontalAlignment(SwingConstants.CENTER);
@@ -165,7 +164,6 @@ public class JavaGameClientView extends JFrame {
 		setVisible(true);
 
 		UserName = username;
-//		lblUserName[0].setText(username);
 
 		imgBtn = new JButton("+");
 		imgBtn.setFont(new Font("굴림", Font.PLAIN, 11));
@@ -228,7 +226,6 @@ public class JavaGameClientView extends JFrame {
 		lblMouseEvent.setFont(new Font("양재인장체M", Font.BOLD, 14));
 		lblMouseEvent.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblMouseEvent.setForeground(c);
-//		lblMouseEvent.setBackground(Color.WHITE);
 		lblMouseEvent.setBounds(815, 270, 234, 40);
 		lblMouseEvent.setText("Mode : " + getMode() + "| pen_size = " + pen_size);
 		lblMouseEvent.setOpaque(true);
@@ -376,10 +373,6 @@ public class JavaGameClientView extends JFrame {
 
 		btnPurple = new JLabel("", new ImageIcon("src/imgsrc/purpleBtn.png"), JLabel.CENTER);
 		btnPurple.setBounds(870, 160, 42, 72);
-//		btnPurple.setBorderPainted(false);
-//		btnPurple.setContentAreaFilled(false);
-//		btnPurple.setFocusPainted(false);
-//		btnPurple.setOpaque(true);
 		contentPane.add(btnPurple);
 		btnPurple.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
@@ -741,7 +734,6 @@ public class JavaGameClientView extends JFrame {
 						else
 							AppendText(msg);
 						if (cm.data.equals(answer)) {
-//							cm.score+=10;
 							SendGameOver(cm);
 						}
 						break;
@@ -761,7 +753,7 @@ public class JavaGameClientView extends JFrame {
 					case "600": // Game Start
 						DoGameStart(cm);
 						break;
-					case "700":
+					case "700": //Game Over
 						DoGameOver(cm);
 						UpdateUserScore(cm);
 						break;
@@ -830,7 +822,6 @@ public class JavaGameClientView extends JFrame {
 			return;
 
 		ResetCanvas();
-//		c = Color.WHITE;
 		isStarter = false;
 		btnBlack.setEnabled(false);
 		btnRed.setEnabled(false);
@@ -1042,19 +1033,9 @@ public class JavaGameClientView extends JFrame {
 			} else if (mode == 1) { // mode:rectangle
 				startV.add(e.getPoint());
 
-//				Point start = startV.elementAt(0);
-//				for(int i=1;i<startV.size()-1;i++) {
-//					Point end = startV.elementAt(i+1);
-//					gc2.drawRect((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
-//				}				
 			} else if (mode == 2) {// mode:circle
 				startV.add(e.getPoint());
 
-//				Point start = startV.elementAt(0);
-//				for(int i=1;i<startV.size()-1;i++) {
-//					Point end = startV.elementAt(i+1);
-//					gc2.fillOval((int)start.getX(), (int)start.getY(), Math.abs((int)start.getX()-(int)end.getX()), Math.abs((int)start.getY()-(int)end.getY()));
-//				}
 			} else if (mode == 4) { // mode:fillrectangle
 				startV.add(e.getPoint());
 
@@ -1120,8 +1101,7 @@ public class JavaGameClientView extends JFrame {
 				int y = (int) Math.min(start.getY(), end.getY());
 				int w = Math.abs((int) start.getX() - (int) end.getX());
 				int h = Math.abs((int) start.getY() - (int) end.getY());
-				gc2.drawRect(x, y, Math.abs((int) start.getX() - (int) end.getX()),
-						Math.abs((int) start.getY() - (int) end.getY()));
+				gc2.drawRect(x, y, w, h);
 
 			} else if (mode == 2) { // mode:circle
 				Point start = startV.elementAt(0);
@@ -1130,8 +1110,7 @@ public class JavaGameClientView extends JFrame {
 				int y = (int) Math.min(start.getY(), end.getY());
 				int w = Math.abs((int) start.getX() - (int) end.getX());
 				int h = Math.abs((int) start.getY() - (int) end.getY());
-				gc2.drawOval(x, y, Math.abs((int) start.getX() - (int) end.getX()),
-						Math.abs((int) start.getY() - (int) end.getY()));
+				gc2.drawOval(x, y, w, h);
 
 			} else if (mode == 4) { // mode:fillrectangle
 
@@ -1141,18 +1120,7 @@ public class JavaGameClientView extends JFrame {
 				int y = (int) Math.min(start.getY(), end.getY());
 				int w = Math.abs((int) start.getX() - (int) end.getX());
 				int h = Math.abs((int) start.getY() - (int) end.getY());
-//				for(int i=0;i<startV.size()-1;i++) {
-//					Point end1 = startV.elementAt(i+1);
-//					int x1 = (int) Math.min(start.getX(), end1.getX());
-//					int y1 = (int) Math.min(start.getY(), end1.getY());
-//					int w1 = Math.abs((int)start.getX()-(int)end1.getX());
-//					int h1 = Math.abs((int)start.getY()-(int)end1.getY());
-//					gc2.fillRect(x1, y1, w1, h1);
-//				}
-//				gc2.fillRect(x, y, w, h);
-				gc2.setPaintMode();
-				gc2.fillRect(x, y, Math.abs((int) start.getX() - (int) end.getX()),
-						Math.abs((int) start.getY() - (int) end.getY()));
+				gc2.fillRect(x, y, w, h);
 
 			} else if (mode == 5) { // mode:fillcircle
 				Point start = startV.elementAt(0);
@@ -1161,8 +1129,7 @@ public class JavaGameClientView extends JFrame {
 				int y = (int) Math.min(start.getY(), end.getY());
 				int w = Math.abs((int) start.getX() - (int) end.getX());
 				int h = Math.abs((int) start.getY() - (int) end.getY());
-				gc2.fillOval(x, y, Math.abs((int) start.getX() - (int) end.getX()),
-						Math.abs((int) start.getY() - (int) end.getY()));
+				gc2.fillOval(x, y, w, h);
 
 			}
 			gc.drawImage(panelImage, 0, 0, panel);
